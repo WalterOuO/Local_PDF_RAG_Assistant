@@ -1,0 +1,52 @@
+services:
+  ollama:
+    image: ollama/ollama
+
+    container_name: ollama
+
+    ports:
+      - "11434:11434"
+
+    volumes:  
+      - ollama_data:/root/.ollama
+
+    restart: unless-stopped
+
+
+  ollama-init:
+    image: ollama/ollama
+    container_name: ollama_init
+    depends_on:
+      - ollama
+    environment:
+      - OLLAMA_HOST=ollama
+    command: >
+      sh -c "
+      sleep 10 &&
+      ollama pull llama3
+      "
+
+  web:
+    build: .
+
+    container_name: pdf_rag
+
+    ports:
+      - "8001:8000"
+
+    env_file:
+      - .env
+
+    volumes:
+      # dev version
+      # - ./app:/app
+      - ./uploaded_pdfs:/app/uploaded_pdfs
+      - ./chroma_langchain_db:/app/chroma_langchain_db
+
+    depends_on:
+      - ollama
+
+    restart: unless-stopped
+
+volumes:
+  ollama_data:
