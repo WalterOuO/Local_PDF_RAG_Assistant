@@ -65,26 +65,6 @@ The system allows users to upload PDF files and ask natural language questions g
                 └─────────────────┘
 ```
 
-```mermaid
-graph LR
-    %% 節點定義與繁體中文標籤
-    PDF[PDF 檔案] --> PL[PyPDFLoader]
-    PL --> TS[文本切分器<br>Text Splitter]
-    TS --> BGE[BGE 向量嵌入<br>BGE Embeddings]
-    BGE --> DB[(向量資料庫<br>ChromaDB)]
-    DB <--> RT[檢索器<br>Retriever]
-    RT <--> OL[大型語言模型<br>Ollama LLM]
-    OL --> FA[最終答案<br>Final Answer]
-
-    %% 樣式美化
-    classDef default fill:#f9f9f9,stroke:#333,stroke-width:1px;
-    classDef database fill:#e1f5fe,stroke:#0288d1,stroke-width:2px;
-    classDef keyNode fill:#e8f5e9,stroke:#388e3c,stroke-width:2px;
-    
-    class DB database;
-    class OL,FA keyNode;
-```
-
 ---
 
 # Tech Stack
@@ -122,23 +102,23 @@ graph LR
 
 ```text
 pdf-rag/
-├── app/                        # 應用程式核心程式碼
-│   ├── api/                    # API 路由與控制器
-│   │   └── rag.py                # RAG 相關 API 接口
-│   ├── db/                     # 資料庫連接與設定
-│   │   └── chroma_client.py      # ChromaDB 客戶端初始化
-│   ├── models/                 # 資料模型與 Schema
-│   │   └── schemas.py            # Pydantic 或資料驗證模型
-│   ├── services/               # 核心業務邏輯
-│   │   ├── rag_service.py        # RAG 檢索與生成邏輯
-│   │   └── prompt.py             # 提示詞（Prompt）模板管理
-│   └── main.py                 # 應用程式啟動入口
-├── chroma_langchain_db/        # ChromaDB 本地持久化數據儲存目錄
-├── uploaded_pdfs/              # 暫存使用者上傳的 PDF 檔案目錄
-├── Dockerfile                  # Docker 映像檔構建設定
-├── docker-compose.yml          # 多容器（FastAPI + Chroma）編排設定
-├── requirements.txt            # Python 依賴套件清單
-└── README.md                   # 專案說明文件
+├── app/                       
+│   ├── api/                   
+│   │   └── rag.py          
+│   ├── db/                    
+│   │   └── chroma_client.py    
+│   ├── models/                 
+│   │   └── schemas.py        
+│   ├── services/           
+│   │   ├── rag_service.py       
+│   │   └── prompt.py            
+│   └── main.py               
+├── chroma_langchain_db/      
+├── uploaded_pdfs/           
+├── Dockerfile               
+├── docker-compose.yml       
+├── requirements.txt        
+└── README.md                
 ```
 
 
@@ -341,7 +321,6 @@ uvicorn app.main:app --reload
 docker compose up -d --build
 ```
 
----
 
 ## Verify
 
