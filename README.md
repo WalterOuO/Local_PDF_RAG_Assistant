@@ -315,22 +315,19 @@ uvicorn app.main:app --reload
 
 # Docker Deployment
 
-## Build
+Build:
 
 ```bash
 docker compose up -d --build
 ```
 
-
-## Verify
+Verify:
 
 ```bash
 docker ps
 ```
 
----
-
-## Open Swagger
+Open Swagger:
 
 ```text
 http://localhost:8001/docs
