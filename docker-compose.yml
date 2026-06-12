@@ -1,52 +1,43 @@
 services:
   ollama:
     image: ollama/ollama
-
     container_name: ollama
-
     ports:
       - "11434:11434"
-
     volumes:  
       - ollama_data:/root/.ollama
-
     restart: unless-stopped
 
+    deploy:
+      resources:
+        limits:
+          memory: 3.5G
 
-  ollama-init:
-    image: ollama/ollama
-    container_name: ollama_init
-    depends_on:
-      - ollama
-    environment:
-      - OLLAMA_HOST=ollama
-    command: >
-      sh -c "
-      sleep 10 &&
-      ollama pull llama3
-      "
+    healthcheck:
+      test: ["CMD-SHELL", "ollama list || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
 
   web:
     build: .
-
     container_name: pdf_rag
-
     ports:
       - "8001:8000"
-
     env_file:
       - .env
-
     volumes:
-      # dev version
-      # - ./app:/app
       - ./uploaded_pdfs:/app/uploaded_pdfs
       - ./chroma_langchain_db:/app/chroma_langchain_db
-
     depends_on:
-      - ollama
-
+      ollama:
+        condition: service_healthy
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 2G
 
 volumes:
   ollama_data:

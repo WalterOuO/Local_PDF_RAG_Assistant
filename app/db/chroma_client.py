@@ -18,7 +18,7 @@ vector_store = Chroma(
 )
 
 llm = Ollama(
-    model="llama3",
+    model="llama3.2",   # llama3 需要4.7G 到 5G 記憶體，可以換成 llama3.2 (2.0 GB，運行只需 2.5G 記憶體) or Qwen2.5-1.5B (900MB，1.5G記憶體) 
     base_url="http://ollama:11434"
     )
 

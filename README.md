@@ -102,23 +102,23 @@ The system allows users to upload PDF files and ask natural language questions g
 
 ```text
 pdf-rag/
-├── app/                       
-│   ├── api/                   
-│   │   └── rag.py          
-│   ├── db/                    
-│   │   └── chroma_client.py    
-│   ├── models/                 
-│   │   └── schemas.py        
-│   ├── services/           
-│   │   ├── rag_service.py       
-│   │   └── prompt.py            
-│   └── main.py               
-├── chroma_langchain_db/      
-├── uploaded_pdfs/           
-├── Dockerfile               
-├── docker-compose.yml       
-├── requirements.txt        
-└── README.md                
+├── app/                        # 核心後端應用程式原始碼 (FastAPI)
+│   ├── api/                    # API 路由層 (Routing)
+│   │   └── rag.py              # 定義 PDF 上傳、詢問等 HTTP 接口 (Endpoints)
+│   ├── db/                     # 資料庫連接與語言模型設定
+│   │   └── chroma_client.py    # 初始化向量資料庫 ChromaDB 與 Ollama 模型設定
+│   ├── models/                 # 資料結構與 Pydantic 模組
+│   │   └── schemas.py          # 定義前後端資料交換的 API 欄位格式 (Request/Response)
+│   ├── services/               # 核心業務邏輯層 (Business Logic)
+│   │   ├── rag_service.py      # 負責 PDF 解析、文字切塊 (Chunking)、Embeddings 與檢索
+│   │   └── prompt.py           # 管理餵給大語言模型 (LLM) 的 Prompt 模板
+│   └── main.py                 # 應用程式進入點，初始化 FastAPI 並掛載 router 與 CORS
+├── chroma_langchain_db/        # 本地端 ChromaDB 向量資料庫的數據儲存資料夾 (綁定 Docker Volume)
+├── uploaded_pdfs/              # 存放使用者上傳的原始 PDF 檔案的資料夾 (綁定 Docker Volume)
+├── Dockerfile                  # 用於打包 FastAPI Web 服務的 Docker 鏡像設定檔
+├── docker-compose.yml          # 定義並編排 Web 服務與 Ollama 容器的部署設定檔
+├── requirements.txt            # Python 專案套件依賴清單
+└── README.md                   # 專案說明文件             
 ```
 
 
@@ -167,7 +167,7 @@ Request:
 
 ```json
 {
-  "filename": "RAGpaper.pdf",
+  "filename": "paper.pdf",
   "question": "What is Retrieval-Augmented Generation?"
 }
 ```
@@ -176,9 +176,9 @@ Response:
 
 ```json
 {
-  "filename": "RAGpaper.pdf",
+  "filename": "paper.pdf",
   "question": "What is Retrieval-Augmented Generation?",
-  "answer": "Retrieval-Augmented Generation (RAG) is..."
+  "answer": "Rag retrieval-augmented generation（簡稱Retrieval-Augmented Generation，RAG）是一種使用retrieve和generative language model組合的技術，以提高output的準確性。"
 }
 ```
 
@@ -244,7 +244,7 @@ vector_store.similarity_search(
 
 ```python
 llm = Ollama(
-    model="llama3",
+    model="llama3.2",
     base_url="http://ollama:11434"
     )
 ```
@@ -289,7 +289,7 @@ This project uses Ollama as the local LLM runtime.
 Make sure Ollama is installed and running:
 
 ```bash
-ollama pull llama3
+ollama pull llama3.2
 ```
 
 Start Ollama server:
