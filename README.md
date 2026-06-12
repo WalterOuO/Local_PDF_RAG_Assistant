@@ -346,7 +346,7 @@ GitHub Actions is configured to automatically:
 Pipeline file:
 
 ```text
-.github/workflows/ci.yml
+.github/workflows/cicd.yml
 ```
 
 ---
