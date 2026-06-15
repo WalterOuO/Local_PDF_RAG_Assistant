@@ -10,10 +10,10 @@ router = APIRouter(
 
 
 @router.post("/upload", response_model=schemas.UploadResponse, status_code=status.HTTP_201_CREATED)
-async def upload(file: UploadFile = File(...)):
+def upload(file: UploadFile = File(...)):
     return upload_pdf(file)
 
 
 @router.post("/ask", response_model=schemas.QueryResponse)
-async def ask(request: schemas.QueryRequest):
+def ask(request: schemas.QueryRequest):
     return ask_question(request.filename, request.question)
