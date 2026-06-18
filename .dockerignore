@@ -1,6 +1,9 @@
 __pycache__
+*.pyc
 .git
 .gitignore
 .env
 chroma_langchain_db
 uploaded_pdfs
+LICENSE
+README.md

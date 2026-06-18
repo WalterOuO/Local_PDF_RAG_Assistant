@@ -1,4 +1,5 @@
-# Local PDF RAG Assistant (FastAPI + Ollama + ChromaDB)
+# Local PDF RAG Assistant
+### (FastAPI + Ollama + ChromaDB + Docker)
 
 A Retrieval-Augmented Generation (RAG) system built with FastAPI, ChromaDB, Ollama, and HuggingFace Embeddings. Users can upload PDF documents, automatically generate vector embeddings, store them in a vector database, and perform question-answering based on document contents.
 
@@ -16,7 +17,7 @@ This project demonstrates the implementation of an end-to-end AI backend applica
 - Retrieval-Augmented Generation (RAG)
 - Ollama local LLM inference
 - Docker containerization
-- GitHub Actions CI pipeline
+- GitHub Actions CI/CD pipeline
 
 The system allows users to upload PDF files and ask natural language questions grounded in the document content.
 
@@ -113,8 +114,8 @@ pdf-rag/
 │   │   ├── rag_service.py      # 負責 PDF 解析、文字切塊 (Chunking)、Embeddings 與檢索
 │   │   └── prompt.py           # 管理餵給大語言模型 (LLM) 的 Prompt 模板
 │   └── main.py                 # 應用程式進入點，初始化 FastAPI 並掛載 router 與 CORS
-├── chroma_langchain_db/        # 本地端 ChromaDB 向量資料庫的數據儲存資料夾 (綁定 Docker Volume)
-├── uploaded_pdfs/              # 存放使用者上傳的原始 PDF 檔案的資料夾 (綁定 Docker Volume)
+├── chroma_langchain_db/        # [Bind Mount] 本機 ChromaDB 向量資料庫
+├── uploaded_pdfs/              # [Bind Mount] 本機 PDF 檔案上傳暫存目錄
 ├── Dockerfile                  # 用於打包 FastAPI Web 服務的 Docker 鏡像設定檔
 ├── docker-compose.yml          # 定義並編排 Web 服務與 Ollama 容器的部署設定檔
 ├── requirements.txt            # Python 專案套件依賴清單
