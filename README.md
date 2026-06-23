@@ -5,7 +5,7 @@ A Retrieval-Augmented Generation (RAG) system built with FastAPI, ChromaDB, Olla
 
 ---
 
-# Project Overview
+## Project Overview
 
 This project demonstrates the implementation of an end-to-end AI backend application that combines:
 
@@ -23,7 +23,7 @@ The system allows users to upload PDF files and ask natural language questions g
 
 ---
 
-# System Architecture
+## System Architecture
 
 ```text
                 ┌─────────────────┐
@@ -68,15 +68,15 @@ The system allows users to upload PDF files and ask natural language questions g
 
 ---
 
-# Tech Stack
+## Tech Stack
 
-## Backend
+### Backend
 
 - FastAPI
 - Pydantic
 - Uvicorn
 
-## LLM & RAG
+### LLM & RAG
 
 - LangChain
 - Ollama
@@ -84,12 +84,12 @@ The system allows users to upload PDF files and ask natural language questions g
 - HuggingFace Embeddings
 - BAAI/bge-small-en-v1.5
 
-## Document Processing
+### Document Processing
 
 - PyPDF
 - RecursiveCharacterTextSplitter
 
-## DevOps
+### DevOps
 
 - Docker
 - Docker Compose
@@ -97,75 +97,66 @@ The system allows users to upload PDF files and ask natural language questions g
 
 ---
 
-# Project Structure
-
-### 專案資料夾結構
+## Project Structure
 
 ```text
 pdf-rag/
-├── app/                        # 核心後端應用程式原始碼 (FastAPI)
-│   ├── api/                    # API 路由層 (Routing)
-│   │   └── rag.py              # 定義 PDF 上傳、詢問等 HTTP 接口 (Endpoints)
-│   ├── db/                     # 資料庫連接與語言模型設定
-│   │   └── chroma_client.py    # 初始化向量資料庫 ChromaDB 與 Ollama 模型設定
-│   ├── models/                 # 資料結構與 Pydantic 模組
-│   │   └── schemas.py          # 定義前後端資料交換的 API 欄位格式 (Request/Response)
-│   ├── services/               # 核心業務邏輯層 (Business Logic)
-│   │   ├── rag_service.py      # 負責 PDF 解析、文字切塊 (Chunking)、Embeddings 與檢索
-│   │   └── prompt.py           # 管理餵給大語言模型 (LLM) 的 Prompt 模板
-│   └── main.py                 # 應用程式進入點，初始化 FastAPI 並掛載 router 與 CORS
-├── chroma_langchain_db/        # [Bind Mount] 本機 ChromaDB 向量資料庫
-├── uploaded_pdfs/              # [Bind Mount] 本機 PDF 檔案上傳暫存目錄
-├── Dockerfile                  # 用於打包 FastAPI Web 服務的 Docker 鏡像設定檔
-├── docker-compose.yml          # 定義並編排 Web 服務與 Ollama 容器的部署設定檔
-├── requirements.txt            # Python 專案套件依賴清單
-└── README.md                   # 專案說明文件             
+│
+├── app/                            # 核心應用程式資料夾
+│   ├── api/                        # API 路由控制層 (Controller)
+│   │   └── rag.py                  # 負責 PDF 上傳、語意問答與檢索的 API 端點定義
+│   │
+│   ├── db/                         # 資料庫連接與初始化 (Database Layer)
+│   │   └── chroma_client.py        # 初始化 ChromaDB 向量資料庫與 Ollama LLM 模型配置
+│   │
+│   ├── models/                     # Pydantic 資料驗證與 Schema 定義
+│   │   └── schemas.py              # 定義前後端資料交換的 API 欄位格式 (Request / Response)
+│   │
+│   ├── services/                   # 核心業務邏輯層 (Service Layer)
+│   │   ├── rag_service.py          # 實作 PDF 解析、文字切片 (Chunking)、Embedding 整合與檢索
+│   │   └── prompt.py               # 集中管理與維護餵給大語言模型 (LLM) 的提示詞模板 (Prompt Template)
+│   │
+│   └── main.py                     # FastAPI 應用程式進入點 (初始化服務、掛載中間件與路由)
+│
+├── chroma_langchain_db/            # [Bind Mount] 本機 ChromaDB 向量資料庫持久化目錄
+├── uploaded_pdfs/                  # [Bind Mount] 本機 PDF 檔案上傳暫存目錄
+│
+├── Dockerfile                      # 用於打包 FastAPI Web 服務環境的映像檔定義
+├── docker-compose.yml              # 系統容器編排設定檔 (Web 服務與 Ollama 容器之網路通道配置)
+├── requirements.txt                # 專案 Python 套件依賴清單
+└── README.md                       # 專案說明文件
 ```
 
 
 ---
 
-# Features
+##  API Documentation
 
-## PDF Upload
-
-Upload PDF documents via REST API.
+###  Upload PDF Document
 
 ```http
 POST /rag/upload
 ```
 
-Example:
+Request:
+form-data:
+file: pdf file
 
-```bash
-curl -X POST \
-  "http://localhost:8001/rag/upload" \
-  -F "file=@paper.pdf"
+Response:
+```json
+{
+  "message": "paper.pdf 上傳並成功建立向量索引！",
+  "filename": "paper.pdf"
+}
 ```
 
----
-
-## Vector Indexing
-
-The uploaded PDF is automatically:
-
-1. Parsed
-2. Split into chunks
-3. Converted into embeddings
-4. Stored in ChromaDB
-
----
-
-## Document Question Answering
-
-Ask questions against a specific indexed PDF.
+### Ask Question (RAG)
 
 ```http
 POST /rag/ask
 ```
 
 Request:
-
 ```json
 {
   "filename": "paper.pdf",
@@ -174,7 +165,6 @@ Request:
 ```
 
 Response:
-
 ```json
 {
   "filename": "paper.pdf",
@@ -185,9 +175,9 @@ Response:
 
 ---
 
-# RAG Workflow
+## RAG Workflow
 
-## Step 1: Upload Document
+### Step 1: Upload Document
 
 ```python
 loader = PyPDFLoader(pdf_path)
@@ -196,7 +186,7 @@ docs = loader.load()
 
 ---
 
-## Step 2: Text Chunking
+### Step 2: Text Chunking
 
 ```python
 RecursiveCharacterTextSplitter(
@@ -207,7 +197,7 @@ RecursiveCharacterTextSplitter(
 
 ---
 
-## Step 3: Embedding Generation
+### Step 3: Embedding Generation
 
 ```python
 HuggingFaceEmbeddings(
@@ -217,7 +207,7 @@ HuggingFaceEmbeddings(
 
 ---
 
-## Step 4: Vector Storage
+### Step 4: Vector Storage
 
 ```python
 vector_store = Chroma(
@@ -229,7 +219,7 @@ vector_store = Chroma(
 
 ---
 
-## Step 5: Similarity Retrieval
+### Step 5: Similarity Retrieval
 
 ```python
 vector_store.similarity_search(
@@ -241,7 +231,7 @@ vector_store.similarity_search(
 
 ---
 
-## Step 6: LLM Generation
+### Step 6: LLM Generation
 
 ```python
 llm = Ollama(
@@ -252,7 +242,7 @@ llm = Ollama(
 
 ---
 
-# API Documentation
+## API Documentation
 
 After the application starts successfully:
 
@@ -264,9 +254,9 @@ Swagger UI is automatically generated by FastAPI.
 
 ---
 
-# Running Locally
+## Running Locally
 
-## Clone Repository
+### Clone Repository
 
 ```bash
 git clone https://github.com/WalterOuO/Local_PDF_RAG_Assistant.git
@@ -275,7 +265,7 @@ cd pdf-rag
 
 ---
 
-## Install Dependencies
+### Install Dependencies
 
 ```bash
 pip install -r requirements.txt
@@ -283,7 +273,7 @@ pip install -r requirements.txt
 
 ---
 
-## Ollama Setup
+### Ollama Setup
 
 This project uses Ollama as the local LLM runtime.
 
@@ -306,7 +296,7 @@ http://localhost:11434
 
 ---
 
-## Run FastAPI
+### Run FastAPI
 
 ```bash
 uvicorn app.main:app --reload
@@ -314,7 +304,7 @@ uvicorn app.main:app --reload
 
 ---
 
-# Docker Deployment
+## Docker Deployment
 
 Build:
 
@@ -336,7 +326,7 @@ http://localhost:8001/docs
 
 ---
 
-# CI Pipeline
+## CI Pipeline
 
 GitHub Actions is configured to automatically:
 
@@ -347,12 +337,12 @@ GitHub Actions is configured to automatically:
 Pipeline file:
 
 ```text
-.github/workflows/cicd.yml
+.github/workflows/ci.yml
 ```
 
 ---
 
-# Challenges Solved
+## Challenges Solved
 
 ### Multi-Document Isolation
 
@@ -391,7 +381,7 @@ respond that the answer is unavailable in the document.
 
 ---
 
-# Future Improvements
+## Future Improvements
 
 - Hybrid Search (BM25 + Vector Search)
 - Reranking Models
@@ -405,16 +395,16 @@ respond that the answer is unavailable in the document.
 
 ---
 
-# Skills Demonstrated
+## Skills Demonstrated
 
-## Backend Development
+### Backend Development
 
 - FastAPI
 - REST API Design
 - Dependency Management
 - Service-Oriented Architecture
 
-## AI Engineering
+### AI Engineering
 
 - RAG Pipeline
 - LangChain
@@ -423,7 +413,7 @@ respond that the answer is unavailable in the document.
 - Embeddings
 - Vector Databases
 
-## DevOps
+### DevOps
 
 - Docker
 - CI/CD
