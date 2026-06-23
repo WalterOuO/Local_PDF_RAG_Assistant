@@ -139,9 +139,10 @@ POST /rag/upload
 ```
 
 Request:
+```text
 form-data:
 file: pdf file
-
+```
 
 Response:
 ```json
